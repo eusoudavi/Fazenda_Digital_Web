@@ -5,9 +5,10 @@ const links = [
   { to: '/animais', label: 'Animais' },
   { to: '/rebanhos', label: 'Rebanhos' },
   { to: '/pesagens', label: 'Pesagens' },
-  { to: '/eventos', label: 'Eventos' },
+  { to: '/eventos', label: 'Partos' },
   { to: '/vacinas', label: 'Vacinas' },
   { to: '/vacinacoes', label: 'Vacinações' },
+  { to: '/relatorios', label: 'Relatórios' },
 ]
 
 export default function Navbar() {

@@ -7,6 +7,7 @@ import Pesagens from './pages/Pesagens'
 import Eventos from './pages/Eventos'
 import Vacinas from './pages/Vacinas'
 import Vacinacoes from './pages/Vacinacoes'
+import Relatorios from './pages/Relatorios'
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
             <Route path="/eventos" element={<Eventos />} />
             <Route path="/vacinas" element={<Vacinas />} />
             <Route path="/vacinacoes" element={<Vacinacoes />} />
+            <Route path="/relatorios" element={<Relatorios />} />
           </Routes>
         </main>
       </div>

@@ -12,6 +12,8 @@ const crud = (recurso) => ({
   deletar: (id) => http.delete(`/${recurso}/${id}`),
 })
 
+export const syncApi = { baixar: () => http.get('/sync') }
+
 export const animaisApi = crud('animais')
 export const rebanhoApi = crud('rebanhos')
 export const pesagensApi = crud('pesagens')

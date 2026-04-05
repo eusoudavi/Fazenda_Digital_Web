@@ -272,6 +272,59 @@ tbody td {
   margin-top: 4px;
 }
 
+/* Relatórios */
+.relatorios-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.relatorio-card {
+  background: white;
+  border-radius: 8px;
+  padding: 18px 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.relatorio-info h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.relatorio-info p {
+  font-size: 13px;
+  color: #777;
+}
+
+.relatorio-acoes {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn-export-pdf {
+  background: #c62828;
+  color: white;
+  min-width: 72px;
+}
+
+.btn-export-xlsx {
+  background: #1565c0;
+  color: white;
+  min-width: 72px;
+}
+
+.btn-export-pdf:disabled,
+.btn-export-xlsx:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 /* Seções do formulário */
 .form-secao {
   font-size: 11px;
