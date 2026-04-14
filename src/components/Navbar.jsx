@@ -1,7 +1,10 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 
 const links = [
   { to: '/', label: 'Dashboard' },
+  { to: '/usuarios', label: 'Usuários' },
+  { to: '/fazendas', label: 'Fazendas' },
   { to: '/animais', label: 'Animais' },
   { to: '/rebanhos', label: 'Rebanhos' },
   { to: '/pesagens', label: 'Pesagens' },
@@ -12,6 +15,14 @@ const links = [
 ]
 
 export default function Navbar() {
+  const { usuario, logout } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+    navigate('/login')
+  }
+
   return (
     <nav className="navbar">
       <div className="navbar-logo">Fazenda Digital</div>
@@ -25,6 +36,10 @@ export default function Navbar() {
           {link.label}
         </NavLink>
       ))}
+      <div className="navbar-footer">
+        {usuario && <span className="navbar-usuario">{usuario.nome}</span>}
+        <button className="navbar-logout" onClick={handleLogout}>Sair</button>
+      </div>
     </nav>
   )
 }
