@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { animaisApi, rebanhoApi, pesagensApi, eventosApi, vacinasApi, vacinacoesApi, syncApi } from '../services/api'
+import { animaisApi, rebanhoApi, pesagensApi, eventosApi, vacinasApi, vacinacoesApi, syncApi, pastosApi } from '../services/api'
 import { exportarPDF, exportarXLSX } from '../services/exportar'
 
 const TIPOS_VACINA = {
@@ -10,7 +10,32 @@ const TIPOS_VACINA = {
 const labelTipo = (v) => TIPOS_VACINA[v] ?? v
 
 // Cada relatório define como buscar e montar os dados
+function fmtArea(ha) {
+  if (ha == null) return '—'
+  return `${Number(ha).toFixed(2)} ha`
+}
+
+function fmtPerim(m) {
+  if (m == null) return '—'
+  return m >= 1000 ? `${(m / 1000).toFixed(2)} km` : `${Math.round(m)} m`
+}
+
 const RELATORIOS = [
+  {
+    id: 'pastos',
+    titulo: 'Pastos',
+    descricao: 'Listagem de pastos com área e perímetro.',
+    colunas: ['Nome', 'Área', 'Perímetro', 'Criado em'],
+    buscar: async () => {
+      const { data } = await pastosApi.listarTodos()
+      return data.map((p) => [
+        p.nome ?? '—',
+        fmtArea(p.area_ha),
+        fmtPerim(p.perimetro_m),
+        p.created_at ? p.created_at.slice(0, 10) : '—',
+      ])
+    },
+  },
   {
     id: 'animais',
     titulo: 'Animais',
@@ -163,6 +188,10 @@ export default function Relatorios() {
     const chave = `${relatorio.id}-${formato}`
     setCarregando((prev) => ({ ...prev, [chave]: true }))
     try {
+      if (formato === 'pdf' && relatorio.gerarPdf) {
+        await relatorio.gerarPdf()
+        return
+      }
       const linhas = await relatorio.buscar()
       if (linhas.length === 0) {
         alert(`Nenhum dado encontrado para o relatório de ${relatorio.titulo}.`)

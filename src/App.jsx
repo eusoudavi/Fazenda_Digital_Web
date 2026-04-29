@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
+import { ThemeProvider } from './contexts/ThemeContext'
 import Navbar from './components/Navbar'
+import Topbar from './components/Topbar'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Usuarios from './pages/Usuarios'
@@ -12,6 +14,7 @@ import Eventos from './pages/Eventos'
 import Vacinas from './pages/Vacinas'
 import Vacinacoes from './pages/Vacinacoes'
 import Relatorios from './pages/Relatorios'
+import Pastos from './pages/Pastos'
 
 function RotaProtegida({ children }) {
   const { autenticado } = useAuth()
@@ -21,14 +24,18 @@ function RotaProtegida({ children }) {
 function Layout({ children }) {
   return (
     <div className="layout">
-      <Navbar />
-      <main className="conteudo">{children}</main>
+      <Topbar />
+      <div className="layout-body">
+        <Navbar />
+        <main className="conteudo">{children}</main>
+      </div>
     </div>
   )
 }
 
 export default function App() {
   return (
+    <ThemeProvider>
     <AuthProvider>
       <BrowserRouter>
         <Routes>
@@ -46,6 +53,7 @@ export default function App() {
                   <Route path="/eventos" element={<Eventos />} />
                   <Route path="/vacinas" element={<Vacinas />} />
                   <Route path="/vacinacoes" element={<Vacinacoes />} />
+                  <Route path="/pastos" element={<Pastos />} />
                   <Route path="/relatorios" element={<Relatorios />} />
                 </Routes>
               </Layout>
@@ -54,5 +62,6 @@ export default function App() {
         </Routes>
       </BrowserRouter>
     </AuthProvider>
+    </ThemeProvider>
   )
 }
