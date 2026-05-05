@@ -10,11 +10,11 @@ http.interceptors.request.use((config) => {
   return config
 })
 
-// Redireciona para /login em caso de 401
+// Redireciona para /login em caso de 401 ou 403
 http.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 || error.response?.status === 403) {
       localStorage.removeItem('fazenda_token')
       localStorage.removeItem('fazenda_usuario')
       window.location.href = '/login'

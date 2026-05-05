@@ -1152,3 +1152,135 @@ body.dark .vacina-check small { color: #9ca3af; }
 /* Vazio */
 body.dark .vazio { color: #6b7280; }
 body.dark .campo-hint { color: #6b7280; }
+
+/* ── Modal de Exportação de Mapa ────────────────────────────────────────────── */
+
+.exp-modal {
+  background: white;
+  border-radius: 12px;
+  width: 560px;
+  max-width: 98vw;
+  max-height: 95vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+}
+
+.exp-corpo {
+  padding: 0 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.exp-opts {
+  display: flex;
+  gap: 24px;
+}
+
+.exp-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.exp-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #2e7d32;
+}
+
+.exp-btns {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.exp-btn {
+  padding: 6px 14px;
+  border: 2px solid #d0d0d0;
+  border-radius: 6px;
+  background: white;
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.12s;
+}
+
+.exp-btn:hover {
+  border-color: #2e7d32;
+  color: #2e7d32;
+}
+
+.exp-btn.ativo {
+  border-color: #2e7d32;
+  background: #f1f8e9;
+  color: #2e7d32;
+}
+
+.exp-preview-outer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.exp-preview-box {
+  border: 2px solid #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+}
+
+.exp-preview-loading {
+  font-size: 13px;
+  color: #888;
+}
+
+.exp-dims-info {
+  font-size: 12px;
+  color: #aaa;
+}
+
+.exp-footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* dark mode */
+body.dark .exp-modal { background: #1f2937; }
+body.dark .exp-btn { background: #252f3e; border-color: #374151; color: #9ca3af; }
+body.dark .exp-btn:hover { border-color: #4ade80; color: #4ade80; }
+body.dark .exp-btn.ativo { background: #1a3520; border-color: #4ade80; color: #4ade80; }
+body.dark .exp-preview-box { border-color: #374151; background: #111827; }
+body.dark .exp-preview-loading { color: #6b7280; }
+body.dark .exp-dims-info { color: #6b7280; }
+
+/* Label permanente dos pastos no mapa */
+.pasto-label {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: white !important;
+  text-shadow:
+    -1px -1px 0 rgba(0,0,0,0.7),
+     1px -1px 0 rgba(0,0,0,0.7),
+    -1px  1px 0 rgba(0,0,0,0.7),
+     1px  1px 0 rgba(0,0,0,0.7) !important;
+  white-space: nowrap !important;
+  pointer-events: none !important;
+}
+
+.pasto-label::before {
+  display: none !important;
+}

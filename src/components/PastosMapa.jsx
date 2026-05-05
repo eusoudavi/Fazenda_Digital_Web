@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { MapContainer, TileLayer, Polygon, useMap, useMapEvents } from 'react-leaflet'
+import { MapContainer, TileLayer, Polygon, Tooltip, useMap, useMapEvents } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
+import { SeletorRetangulo, ModalExportarMapa } from './MapaExportador'
 
 const CAMADAS = {
   satelite: {
@@ -49,34 +50,49 @@ function FitBounds({ pastos }) {
   return null
 }
 
-function DeselecionarAoClicarMapa({ onDeselect }) {
-  useMapEvents({ click: onDeselect })
+function DeselecionarAoClicarMapa({ onDeselect, modoSelecaoRef }) {
+  useMapEvents({
+    click() {
+      if (modoSelecaoRef.current) return
+      onDeselect()
+    },
+  })
   return null
 }
 
 export default function PastosMapa({ pastos, onSelect }) {
   const [modo, setModo] = useState('satelite')
   const [selecionadoId, setSelecionadoId] = useState(null)
+  const [modoSelecao, setModoSelecao] = useState(false)
+  const [selecaoBounds, setSelecaoBounds] = useState(null)
   const clicouPasto = useRef(false)
+  const modoSelecaoRef = useRef(false)
   const camada = CAMADAS[modo]
+
+  useEffect(() => {
+    modoSelecaoRef.current = modoSelecao
+  }, [modoSelecao])
 
   const pastosValidos = [...pastos]
     .filter((p) => parseCoordenadas(p.coordenadas).length >= 3)
     .sort((a, b) => (b.area_ha ?? 0) - (a.area_ha ?? 0))
 
   const selecionar = (pasto) => {
+    if (modoSelecaoRef.current) return
     clicouPasto.current = true
     setSelecionadoId(pasto.id)
     onSelect?.(pasto)
   }
 
   const deselecionar = () => {
-    if (clicouPasto.current) {
-      clicouPasto.current = false
-      return
-    }
+    if (clicouPasto.current) { clicouPasto.current = false; return }
     setSelecionadoId(null)
     onSelect?.(null)
+  }
+
+  const aoSelecionar = (bounds) => {
+    setModoSelecao(false)
+    setSelecaoBounds(bounds)
   }
 
   return (
@@ -109,34 +125,79 @@ export default function PastosMapa({ pastos, onSelect }) {
                 weight: selecionado ? 4 : 2,
               }}
               eventHandlers={{ click: () => selecionar(pasto) }}
-            />
+            >
+              <Tooltip permanent direction="center" className="pasto-label">
+                {pasto.nome}
+              </Tooltip>
+            </Polygon>
           )
         })}
 
         <FitBounds pastos={pastosValidos} />
-        <DeselecionarAoClicarMapa onDeselect={deselecionar} />
+        <DeselecionarAoClicarMapa onDeselect={deselecionar} modoSelecaoRef={modoSelecaoRef} />
+        <SeletorRetangulo ativo={modoSelecao} onSelecionar={aoSelecionar} />
       </MapContainer>
 
-      <button
-        onClick={() => setModo((m) => (m === 'satelite' ? 'mapa' : 'satelite'))}
-        style={{
-          position: 'absolute',
-          top: 10,
-          right: 10,
-          zIndex: 1000,
-          background: 'white',
-          border: '2px solid rgba(0,0,0,0.2)',
-          borderRadius: 6,
-          padding: '6px 12px',
-          fontSize: 13,
-          fontWeight: 600,
-          cursor: 'pointer',
-          boxShadow: '0 1px 4px rgba(0,0,0,0.25)',
-          color: '#333',
-        }}
-      >
-        {modo === 'satelite' ? 'Mapa' : 'Satélite'}
-      </button>
+      {/* Overlay buttons */}
+      <div style={{ position: 'absolute', top: 10, right: 10, zIndex: 1000, display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <button
+          onClick={() => setModo((m) => (m === 'satelite' ? 'mapa' : 'satelite'))}
+          style={overlayBtnStyle}
+        >
+          {modo === 'satelite' ? 'Mapa' : 'Satélite'}
+        </button>
+        <button
+          onClick={() => setModoSelecao((v) => !v)}
+          style={{ ...overlayBtnStyle, background: modoSelecao ? '#1976d2' : 'white', color: modoSelecao ? 'white' : '#333', borderColor: modoSelecao ? '#1976d2' : 'rgba(0,0,0,0.2)' }}
+        >
+          {modoSelecao ? 'Cancelar' : '⬚ Exportar'}
+        </button>
+      </div>
+
+      {/* Selection hint */}
+      {modoSelecao && (
+        <div style={hintStyle}>
+          Arraste para selecionar a área a exportar
+        </div>
+      )}
+
+      {/* Export modal */}
+      {selecaoBounds && (
+        <ModalExportarMapa
+          bounds={selecaoBounds}
+          pastos={pastosValidos}
+          modo={modo}
+          onFechar={() => setSelecaoBounds(null)}
+        />
+      )}
     </div>
   )
+}
+
+const overlayBtnStyle = {
+  background: 'white',
+  border: '2px solid rgba(0,0,0,0.2)',
+  borderRadius: 6,
+  padding: '6px 12px',
+  fontSize: 13,
+  fontWeight: 600,
+  cursor: 'pointer',
+  boxShadow: '0 1px 4px rgba(0,0,0,0.25)',
+  color: '#333',
+}
+
+const hintStyle = {
+  position: 'absolute',
+  bottom: 10,
+  left: '50%',
+  transform: 'translateX(-50%)',
+  zIndex: 1000,
+  background: 'rgba(25, 118, 210, 0.9)',
+  color: 'white',
+  padding: '7px 16px',
+  borderRadius: 20,
+  fontSize: 13,
+  fontWeight: 600,
+  pointerEvents: 'none',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
 }
